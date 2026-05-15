@@ -1,0 +1,22 @@
+%%{init: {"flowchart": {"rankSpacing": 80, "nodeSpacing": 40}} }%%
+flowchart TD
+    handoff[Frame received by server]
+
+    subgraph serverSide["server side"]
+        direction TB
+        server[FramedTransactionServer]
+        decoder[TextFrameDecoder ISO-8859-2]
+        writer["writeDecodedMessage<br/>decodedMessage"]
+        processor[TransactionFeedProcessor]
+        parser[TransactionFeedParser]
+        repository[TransactionFeedRepository]
+    end
+
+    subgraph outputs["outputs"]
+        direction LR
+        output[/UTF-8 output file/]
+        db[(SQLite)]
+    end
+
+    handoff --> server --> decoder -- decodedMessage --> writer --> output
+    decoder -- decodedMessage --> processor --> parser --> repository --> db

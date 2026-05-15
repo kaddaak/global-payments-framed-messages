@@ -1,0 +1,20 @@
+%%{init: {"flowchart": {"rankSpacing": 70, "nodeSpacing": 40}} }%%
+flowchart TD
+    input[/framed binary file/]
+
+    subgraph clientSide["client side"]
+        client[FramedTransactionClient]
+        clientReader[FrameReader]
+        clientWriter[FrameWriter]
+    end
+
+    subgraph transport["transport"]
+        socket[TCP socket]
+        channel[TcpFramedMessageChannel]
+        serverReader[FrameReader]
+    end
+
+    handoff[Frame handed to server]
+
+    input --> client --> clientReader --> clientWriter --> socket
+    socket --> channel --> serverReader --> handoff
